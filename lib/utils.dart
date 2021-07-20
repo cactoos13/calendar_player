@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 
@@ -8,11 +7,6 @@ import 'model/difficulty.dart';
 import 'model/event_type.dart';
 import 'model/feeling.dart';
 import 'model/music_type.dart';
-
-//String enumToString(Object o) => o.toString().split('.').last;
-//
-//T? enumFromString<T>(String key, List<T> values) =>
-//    values.firstWhereOrNull((v) => key == enumToString(v!));
 
 enum DayTime {
   morning,
@@ -39,7 +33,6 @@ class Events {
   LinkedHashMap<DateTime, List<Event>> events;
 
   factory Events.fromJson(Map<String, dynamic> json) {
-//    print('factory json: ${json['events']}');
     return Events(
       LinkedHashMap.from(
         Map.from(json['events']).map(
@@ -58,15 +51,11 @@ class Events {
     );
   }
 
-//  toEncodable() {}
-
   Map<String, dynamic> toJson() {
     final result = {
       'events': LinkedHashMap.from(
         Map.from(events).map(
           (k, v) {
-//              print(k);
-//              print((k as DateTime).toIso8601String());
             final mapEntry = MapEntry<String, dynamic>(
               k.toString(),
               List<dynamic>.from(
@@ -75,90 +64,15 @@ class Events {
                 ),
               ),
             );
-//            print('done');
             return mapEntry;
           },
         ),
       ),
     };
-//    print('done done');
-//    print(result);
     return result;
   }
 }
 
-//class Events {
-//  Events();
-//
-//  var events = LinkedHashMap<DateTime, List<Event>>(
-//    equals: isSameDay,
-//    hashCode: getHashCode,
-//  );
-//
-//  toJson() {
-//    Map<String, dynamic> toJson() => {
-////      'events': events.map((v) => v.toJson()).toList(),
-////      'events': List<dynamic>.from(events.map((x) => x.toJson())),;
-//          'events': [],
-//        };
-//  }
-//
-//  static final fakeEvents = '''
-//    {
-//	"events": {
-//		"2021-07-19 20:39:24.237591": [{
-//				"title": "test",
-//				"eventType": "fun",
-//				"difficulty": "easy",
-//				"feeling": "like",
-//				"dateTime": "2021-07-19 20:39:24.237591"
-//			},
-//			{
-//				"title": "test2",
-//				"eventType": "fun",
-//				"difficulty": "easy",
-//				"feeling": "like",
-//				"dateTime": "2021-07-19 20:39:24.237591"
-//			}
-//		],
-//		"2021-07-20 00:28:02.178080": [{
-//				"title": "test",
-//				"eventType": "fun",
-//				"difficulty": "easy",
-//				"feeling": "like",
-//				"dateTime": "2021-07-20 00:28:02.178080"
-//			},
-//			{
-//				"title": "test2",
-//				"eventType": "fun",
-//				"difficulty": "easy",
-//				"feeling": "like",
-//				"dateTime": "2021-07-20 00:28:02.178080"
-//			}
-//		]
-//	}
-//}
-//  ''';
-//
-//  factory Events.fromJson(Map<String, dynamic> json) {
-//    final decoded = jsonDecode(fakeEvents);
-//    print(decoded);
-////    print(decoded['events']);
-//    return Events();
-////    final receivedDateTime = DateTime.parse(json['dateTime']);
-////    return Event(
-////      json['title'],
-////      eventType: EnumToString.fromString(EventType.values, json['eventType']),
-////      difficulty:
-////          EnumToString.fromString(Difficulty.values, json['difficulty']),
-////      feeling: EnumToString.fromString(Feeling.values, json['feeling']),
-////      time: TimeOfDay.fromDateTime(receivedDateTime),
-////      dateTime: receivedDateTime,
-////    );
-//  }
-//}
-
-/// Example event class.
 class Event {
   String title;
   EventType? eventType;
@@ -200,7 +114,6 @@ class Event {
       'feeling': EnumToString.convertToString(feeling),
       'dateTime': dateTime!.toIso8601String(),
     };
-//    print(result);
     return result;
   }
 

@@ -40,29 +40,8 @@ class _TableEventState extends State<TableEvent> {
 
   Events? eventsClass;
 
-//  = Events.fromJson(jsonDecode(fakeEvents));
-
-//  Events eventsClass = Events(LinkedHashMap.from({
-//    DateTime.now(): [
-//      Event(
-//        'test',
-//        dateTime: DateTime.now(),
-//        time: TimeOfDay.fromDateTime(DateTime.now()),
-//        feeling: Feeling.like,
-//        eventType: EventType.work,
-//        difficulty: Difficulty.normal,
-//      )
-//    ]
-//  }));
-
   LinkedHashMap<DateTime, List<Event>> get events =>
       eventsClass?.events ?? LinkedHashMap();
-
-//  //create events class which is a list
-//  var events = LinkedHashMap<DateTime, List<Event>>(
-//    equals: isSameDay,
-//    hashCode: getHashCode,
-//  );
 
   final audios = <Audio>[
     Audio(
@@ -123,26 +102,16 @@ class _TableEventState extends State<TableEvent> {
 
   Future<Null> getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
-//    final decoded = jsonDecode(fakeEvents);
-//    eventsClass = Events.fromJson(decoded);
-//    prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('events')) {
       final String? eventsString = prefs.getString('events');
-//    print('eventsString: $eventsString');
       final decodedEvents = jsonDecode(eventsString!);
       setState(() {
         eventsClass = Events.fromJson(decodedEvents);
       });
       setState(() {
-        //      _selectedEvents.value = _getEventsForDay(_selectedDay!);
-//      _selectedEvents.value = _getEventsForDay(DateTime.now());
         final today = DateTime.parse(
             DateTime.now().toIso8601String().substring(0, 10) + '');
         final todayZ = DateTime.parse(today.toIso8601String() + 'Z');
-//        print('today: $today');
-//        print('todayIso: ${today.toIso8601String()}');
-//        print('todayZ: $todayZ');
-//        print('todayIso: ${today.toIso8601String()}');
         _selectedEvents.value = _getEventsForDay(todayZ);
       });
     } else {
@@ -161,19 +130,12 @@ class _TableEventState extends State<TableEvent> {
     _subscriptions.add(_assetsAudioPlayer.audioSessionId.listen((sessionId) {
       print('audioSessionId : $sessionId');
     }));
-//    _subscriptions
-//        .add(AssetsAudioPlayer.addNotificationOpenAction((notification) {
-//      return false;
-//    }));
     isPlaying = _assetsAudioPlayer.isPlaying.listen((isPlaying) {
       print('isPlaying : $isPlaying');
     });
     playing = _assetsAudioPlayer.current.listen((playing) {
       print('playing : $playing');
     });
-//    _subscriptions.add(_assetsAudioPlayer.isPlaying.listen((isPlaying) {
-//      print('isPlaying : $isPlaying');
-//    }));
     openPlayer();
     getSharedPrefs();
   }
@@ -181,14 +143,9 @@ class _TableEventState extends State<TableEvent> {
   void openPlayer() async {
     await _assetsAudioPlayer.open(
       Playlist(audios: audios, startIndex: 0),
-      showNotification: true,
+//      showNotification: true,
       autoStart: false,
     );
-  }
-
-  void loadEvents() async {
-    prefs = await SharedPreferences.getInstance();
-//    events = prefs.get('events');
   }
 
   @override
@@ -197,13 +154,12 @@ class _TableEventState extends State<TableEvent> {
     _selectedEvents.dispose();
     isPlaying.cancel();
     playing.cancel();
-//    print('dispose');
     super.dispose();
   }
 
   List<Event> _getEventsForDay(DateTime day) {
-    print('events: $events');
-    print('day: $day');
+//    print('events: $events');
+//    print('day: $day');
     final dayEvents = events[day] ?? [];
 //    print('dayEvents: $dayEvents');
     return dayEvents..sort((a, b) => a.dateTime!.compareTo(b.dateTime!));
@@ -229,14 +185,9 @@ class _TableEventState extends State<TableEvent> {
 
   @override
   Widget build(BuildContext context) {
-//    print(DateTime.now());
     Events.fromJson(jsonDecode(fakeEvents));
     return WillPopScope(
-      onWillPop: () async {
-//        return _showExitDialog();
-        return _onWillPop();
-//        return true;
-      },
+      onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Calendar'),
@@ -267,13 +218,6 @@ class _TableEventState extends State<TableEvent> {
               availableCalendarFormats: const {
                 CalendarFormat.month: 'Month',
               },
-//            onFormatChanged: (format) {
-//              if (_calendarFormat != format) {
-//                setState(() {
-//                  _calendarFormat = format;
-//                });
-//              }
-//            },
               onPageChanged: (focusedDay) {
                 _focusedDay = focusedDay;
               },
@@ -298,10 +242,7 @@ class _TableEventState extends State<TableEvent> {
                         ),
                         child: ListTile(
                           onTap: () {
-//                            print(event);
-//                            print(event.musicType);
                             playByMood(event.musicType);
-//                          _assetsAudioPlayer.playlist.audios;
                           },
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,62 +275,6 @@ class _TableEventState extends State<TableEvent> {
                 },
               ),
             ),
-//          _assetsAudioPlayer.builderCurrent(
-//              builder: (context, Playing? playing) {
-//                return Column(
-//                  children: <Widget>[
-//                    _assetsAudioPlayer.builderLoopMode(
-//                      builder: (context, loopMode) {
-//                        return PlayerBuilder.isPlaying(
-//                            player: _assetsAudioPlayer,
-//                            builder: (context, isPlaying) {
-//                              return PlayingControls(
-//                                loopMode: loopMode,
-//                                isPlaying: isPlaying,
-//                                isPlaylist: true,
-//                                onStop: () {
-//                                  _assetsAudioPlayer.stop();
-//                                },
-//                                toggleLoop: () {
-//                                  _assetsAudioPlayer.toggleLoop();
-//                                },
-//                                onPlay: () {
-//                                  _assetsAudioPlayer.playOrPause();
-//                                },
-//                                onNext: () {
-//                                  //_assetsAudioPlayer.forward(Duration(seconds: 10));
-//                                  _assetsAudioPlayer.next(keepLoopMode: true
-//                                    /*keepLoopMode: false*/);
-//                                },
-//                                onPrevious: () {
-//                                  _assetsAudioPlayer.previous(
-//                                    /*keepLoopMode: false*/);
-//                                },
-//                              );
-//                            });
-//                      },
-//                    ),
-////                      _assetsAudioPlayer.builderRealtimePlayingInfos(
-////                          builder: (context, RealtimePlayingInfos? infos) {
-////                            if (infos == null) {
-////                              return SizedBox();
-////                            }
-////                            //print('infos: $infos');
-////                            return Column(
-////                              children: [
-////                                PositionSeekWidget(
-////                                  currentPosition: infos.currentPosition,
-////                                  duration: infos.duration,
-////                                  seekTo: (to) {
-////                                    _assetsAudioPlayer.seek(to);
-////                                  },
-////                                ),
-////                              ],
-////                            );
-////                          }),
-//                  ],
-//                );
-//              }),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -401,23 +286,6 @@ class _TableEventState extends State<TableEvent> {
   }
 
   void playByMood(MusicType musicType) {
-//    print(isPlaying.isPaused);
-//    print(playing);
-//    _assetsAudioPlayer.playOrPause();
-    //if is playing pause
-    //if is not current index
-    //select index
-    //play
-    //else pause
-    //else
-    //select index
-    //play
-//    return;
-//    _assetsAudioPlayer.pause();
-
-//    if (_assetsAudioPlayer.isPlaying) {
-//      return;
-//    }
     switch (musicType) {
       case MusicType.happy:
         controlMusic(0);
@@ -601,17 +469,8 @@ class _TableEventState extends State<TableEvent> {
                         }
                         final eventsJson = eventsClass!.toJson();
                         final encodedEvents = jsonEncode(eventsJson);
-//                        prefs = await SharedPreferences.getInstance();
                         prefs.setString('events', encodedEvents);
                         clearDialog();
-//                        print(events);
-//                        print(jsonEncode(events));
-//                        prefs = await SharedPreferences.getInstance();
-//                        prefs.setString('events', jsonEncode(events.values));
-//                        print(jsonEncode(events.values.toString()));
-//                        for (var item in events.values) {
-//                          print(jsonEncode(item));
-//                        }
                         _selectedEvents.value = _getEventsForDay(_selectedDay!);
                         Navigator.pop(innerContext);
                       });
@@ -673,219 +532,6 @@ class _TableEventState extends State<TableEvent> {
         false;
   }
 
-  Future<bool> _showExitDialog() async {
-    return await showDialog(
-            context: context,
-            builder: (innerContext) => AlertDialog(
-                  title: Text('Exit'),
-//              content: SingleChildScrollView(
-//                child: Column(
-//                  crossAxisAlignment: CrossAxisAlignment.start,
-//                  mainAxisSize: MainAxisSize.min,
-//                  children: [
-//                    Text('save changes?')
-//                    SizedBox(
-//                      height: 16,
-//                    ),
-//                    StatefulBuilder(builder:
-//                        (BuildContext context, StateSetter innerSetState) {
-//                      return Row(
-//                        children: [
-//                          Text('Time: '),
-//                          TextButton(
-//                            onPressed: () async {
-//                              final result = (await showTimePicker(
-//                                context: context,
-//                                initialTime: selectedEventTime,
-//                              ))!;
-//                              innerSetState(() {
-//                                selectedEventTime = result;
-//                              });
-//                              setState(() {
-//                                newEvent.time = result;
-//                              });
-//                            },
-//                            child: Text(
-//                              '${selectedEventTime.hour}:${selectedEventTime.minute.toString().padLeft(2, '0')}',
-//                            ),
-//                          ),
-//                        ],
-//                      );
-//                    }),
-//                    SizedBox(
-//                      height: 16,
-//                    ),
-//                    Text('Type'),
-//                    StatefulBuilder(
-//                        builder: (BuildContext context, StateSetter setState) {
-//                      return Row(
-//                        children: EventType.values.map((e) {
-//                          return Padding(
-//                            padding: const EdgeInsets.symmetric(horizontal: 2),
-//                            child: ChoiceChip(
-//                              label: Text(e.toShortString()),
-//                              selected: newEvent.eventType == e,
-//                              onSelected: (bool selected) {
-//                                if (selected) {
-//                                  setState(() {
-//                                    newEvent.eventType = e;
-//                                  });
-//                                }
-//                              },
-//                            ),
-//                          );
-//                        }).toList(),
-//                      );
-//                    }),
-//                    SizedBox(
-//                      height: 16,
-//                    ),
-//                    Text('Difficulty'),
-//                    StatefulBuilder(
-//                        builder: (BuildContext context, StateSetter setState) {
-//                      return Row(
-//                        children: Difficulty.values.map((e) {
-//                          return Padding(
-//                            padding: const EdgeInsets.symmetric(horizontal: 2),
-//                            child: ChoiceChip(
-//                              label: Text(e.toShortString()),
-//                              selected: newEvent.difficulty == e,
-//                              onSelected: (bool selected) {
-//                                if (selected) {
-//                                  setState(() {
-//                                    newEvent.difficulty = e;
-//                                  });
-//                                }
-//                              },
-//                            ),
-//                          );
-//                        }).toList(),
-//                      );
-//                    }),
-//                    SizedBox(
-//                      height: 16,
-//                    ),
-//                    Text('Mood'),
-//                    StatefulBuilder(
-//                        builder: (BuildContext context, StateSetter setState) {
-//                      return Row(
-//                        children: Feeling.values.map((e) {
-//                          return Padding(
-//                            padding: const EdgeInsets.symmetric(horizontal: 2),
-//                            child: ChoiceChip(
-//                              label: Text(e.toShortString()),
-//                              selected: newEvent.feeling == e,
-//                              onSelected: (bool selected) {
-//                                if (selected) {
-//                                  setState(() {
-//                                    newEvent.feeling = e;
-//                                  });
-//                                }
-//                              },
-//                            ),
-//                          );
-//                        }).toList(),
-//                      );
-//                    }),
-//                  ],
-//                ),
-//              ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                        'Exit',
-                        style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () async {
-                        print('yes');
-                        final eventsJson = eventsClass!.toJson();
-                        final encodedEvents = jsonEncode(eventsJson);
-                        prefs = await SharedPreferences.getInstance();
-                        prefs.setString('events', encodedEvents);
-//                        return true;
-//                        final eventsJsonIn = eventsJson['events'];
-//                        print(eventsJsonIn);
-//                        final encodedSample = jsonEncode({
-//                          'events': {
-//                            DateTime.now().toIso8601String(): [
-//                              Event(
-//                                'test',
-//                                dateTime: DateTime.now(),
-//                                time: TimeOfDay.fromDateTime(DateTime.now()),
-//                                feeling: Feeling.like,
-//                                eventType: EventType.work,
-//                                difficulty: Difficulty.normal,
-//                              ),
-//                            ],
-//                          }
-//                        });
-//                    final encodedSample = jsonEncode({
-//                      DateTime.now(): [
-//                        Event(
-//                          'test',
-//                          dateTime: DateTime.now(),
-//                          time: TimeOfDay.fromDateTime(DateTime.now()),
-//                          feeling: Feeling.like,
-//                          eventType: EventType.work,
-//                          difficulty: Difficulty.normal,
-//                        )
-//                      ]
-//                    });
-//                        const JsonEncoder encoder = JsonEncoder();
-//                        final dynamic object = encoder.convert(eventsClass);
-//                        print(eventsJson);
-//                        print(encodedEvents);
-//                        prefs = await SharedPreferences.getInstance();
-//                        prefs.setString('events', encodedEvents);
-//                        prefs.setString('events2', eventsJson['events'].toString());
-//                        return false;
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Discard changes & Exit',
-                        style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () async {
-                        print('no');
-                        prefs = await SharedPreferences.getInstance();
-                        final String? eventsString = prefs.getString('events');
-                        print('eventsString: $eventsString');
-                        final decodedEvents = jsonDecode(eventsString!);
-                        eventsClass = Events.fromJson(decodedEvents);
-//                        final String? eventsString2 =
-//                            prefs.getString('events2');
-//                        eventsClass = Events.fromJson(jsonDecode(fakeEvents));
-//                        eventsClass = Events.fromJson(jsonDecode(eventsString));
-//                        print('decodedEvents: $decodedEvents');
-//                        print(keys);
-//                        print(eventsString);
-//                        print(eventsString2);
-//                        eventsClass = Events.fromJson(decodedEvents);
-//                        Events.fromJson(jsonDecode(eventsString!));
-//                        eventsClass = Events.fromJson(
-//                            jsonDecode(prefs.getString('events')!));
-//                        return false;
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () {
-                        print('cancel');
-//                        return false;
-                      },
-                    ),
-                  ],
-                )) ??
-        false;
-  }
-
   void clearDialog() {
     _eventNameController.clear();
     selectedEventTime = TimeOfDay.fromDateTime(DateTime.now());
@@ -905,10 +551,6 @@ class _TableEventState extends State<TableEvent> {
   }
 
   void controlMusic(int tempIndex) {
-//    print(tempIndex);
-//    print('currentIndex: $currentIndex');
-//    print('tempIndex: $tempIndex');
-//    currentIndex ?= tempIndex;
     if (currentIndex == null) {
       _assetsAudioPlayer.playlistPlayAtIndex(tempIndex);
     } else if (tempIndex == currentIndex) {
