@@ -32,6 +32,7 @@ dependencies:
       ref: master
   shared_preferences: ^2.0.6
   table_calendar: ^3.0.1
+  enum_to_string: ^2.0.1
 
 dev_dependencies:
   flutter_test:

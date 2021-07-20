@@ -1,12 +1,13 @@
 import 'dart:collection';
-
+import 'dart:convert';
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../difficulty.dart';
-import '../event_type.dart';
-import '../feeling.dart';
+import '../model/difficulty.dart';
+import '../model/event_type.dart';
+import '../model/feeling.dart';
 import '../utils.dart';
 
 class TableEventsExample extends StatefulWidget {
@@ -28,9 +29,9 @@ class _TableEventsExampleState extends State<TableEventsExample> {
   Event newEvent = Event('', time: TimeOfDay.fromDateTime(DateTime.now()));
   TimeOfDay selectedEventTime = TimeOfDay.fromDateTime(DateTime.now());
 
-  var events = LinkedHashMap<DateTime, List<Event>>(
-    equals: isSameDay,
-    hashCode: getHashCode,
+  var events = Map<DateTime, List<Event>>(
+//    equals: isSameDay,
+//    hashCode: getHashCode,
   );
 
   @override
@@ -128,7 +129,8 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                             Text('${event.title}: '
                                 '('
                                 '${event.eventType!.toShortString()}, '
-                                '${event.difficulty!.toShortString()}, ${event.feeling!.toShortString()}'
+                                '${event.difficulty!.toShortString()}, ${event
+                                .feeling!.toShortString()}'
                                 ')'),
                             SizedBox(
                               height: 4,
@@ -137,9 +139,13 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                    '${event.musicType.toString().split('.').last}'),
+                                    '${event.musicType
+                                        .toString()
+                                        .split('.')
+                                        .last}'),
                                 Text(
-                                    '${event.time!.hour}: ${event.time!.minute}'),
+                                    '${event.time!.hour}: ${event.time!
+                                        .minute}'),
                               ],
                             ),
                           ],
@@ -163,7 +169,8 @@ class _TableEventsExampleState extends State<TableEventsExample> {
   _showAddDialog() async {
     await showDialog(
         context: context,
-        builder: (innerContext) => AlertDialog(
+        builder: (innerContext) =>
+            AlertDialog(
               title: Text("Add Event"),
               content: SingleChildScrollView(
                 child: Column(
@@ -198,7 +205,8 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                               });
                             },
                             child: Text(
-                              '${selectedEventTime.hour}:${selectedEventTime.minute}',
+                              '${selectedEventTime.hour}:${selectedEventTime
+                                  .minute}',
                             ),
                           ),
                         ],
@@ -210,75 +218,78 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                     Text('Type'),
                     StatefulBuilder(
                         builder: (BuildContext context, StateSetter setState) {
-                      return Row(
-                        children: EventType.values.map((e) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: ChoiceChip(
-                              label: Text(e.toShortString()),
-                              selected: newEvent.eventType == e,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    newEvent.eventType = e;
-                                  });
-                                }
-                              },
-                            ),
+                          return Row(
+                            children: EventType.values.map((e) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 2),
+                                child: ChoiceChip(
+                                  label: Text(e.toShortString()),
+                                  selected: newEvent.eventType == e,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        newEvent.eventType = e;
+                                      });
+                                    }
+                                  },
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
-                      );
-                    }),
+                        }),
                     SizedBox(
                       height: 16,
                     ),
                     Text('Difficulty'),
                     StatefulBuilder(
                         builder: (BuildContext context, StateSetter setState) {
-                      return Row(
-                        children: Difficulty.values.map((e) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: ChoiceChip(
-                              label: Text(e.toShortString()),
-                              selected: newEvent.difficulty == e,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    newEvent.difficulty = e;
-                                  });
-                                }
-                              },
-                            ),
+                          return Row(
+                            children: Difficulty.values.map((e) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 2),
+                                child: ChoiceChip(
+                                  label: Text(e.toShortString()),
+                                  selected: newEvent.difficulty == e,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        newEvent.difficulty = e;
+                                      });
+                                    }
+                                  },
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
-                      );
-                    }),
+                        }),
                     SizedBox(
                       height: 16,
                     ),
                     Text('Mood'),
                     StatefulBuilder(
                         builder: (BuildContext context, StateSetter setState) {
-                      return Row(
-                        children: Feeling.values.map((e) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: ChoiceChip(
-                              label: Text(e.toShortString()),
-                              selected: newEvent.feeling == e,
-                              onSelected: (bool selected) {
-                                if (selected) {
-                                  setState(() {
-                                    newEvent.feeling = e;
-                                  });
-                                }
-                              },
-                            ),
+                          return Row(
+                            children: Feeling.values.map((e) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 2),
+                                child: ChoiceChip(
+                                  label: Text(e.toShortString()),
+                                  selected: newEvent.feeling == e,
+                                  onSelected: (bool selected) {
+                                    if (selected) {
+                                      setState(() {
+                                        newEvent.feeling = e;
+                                      });
+                                    }
+                                  },
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
-                      );
-                    }),
+                        }),
                   ],
                 ),
               ),
@@ -324,7 +335,8 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                             events[_selectedDay!] = [myEvent];
                           });
                         }
-//                      prefs.setString("events", jsonEncode(events));
+//                        prefs.setString("events", jsonEncode(events));
+                        print(jsonEncode(events));
                         clearDialog();
                         print(events);
                         _selectedEvents.value = _getEventsForDay(_selectedDay!);

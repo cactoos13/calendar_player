@@ -1,12 +1,18 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 
-import 'difficulty.dart';
-import 'event_type.dart';
-import 'feeling.dart';
-import 'music_type.dart';
+import 'model/difficulty.dart';
+import 'model/event_type.dart';
+import 'model/feeling.dart';
+import 'model/music_type.dart';
+
+//String enumToString(Object o) => o.toString().split('.').last;
+//
+//T? enumFromString<T>(String key, List<T> values) =>
+//    values.firstWhereOrNull((v) => key == enumToString(v!));
 
 enum DayTime {
   morning,
@@ -24,6 +30,133 @@ extension TimeOfDayExtension on TimeOfDay {
     return DayTime.night;
   }
 }
+
+class Events {
+  Events(
+    this.events,
+  );
+
+  LinkedHashMap<DateTime, List<Event>> events;
+
+  factory Events.fromJson(Map<String, dynamic> json) {
+//    print('factory json: ${json['events']}');
+    return Events(
+      LinkedHashMap.from(
+        Map.from(json['events']).map(
+          (k, v) {
+            return MapEntry<DateTime, List<Event>>(
+              DateTime.parse(k),
+              List<Event>.from(
+                v.map(
+                  (x) => Event.fromJson(x),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+//  toEncodable() {}
+
+  Map<String, dynamic> toJson() {
+    final result = {
+      'events': LinkedHashMap.from(
+        Map.from(events).map(
+          (k, v) {
+//              print(k);
+//              print((k as DateTime).toIso8601String());
+            final mapEntry = MapEntry<String, dynamic>(
+              k.toString(),
+              List<dynamic>.from(
+                v.map(
+                  (x) => x.toJson(),
+                ),
+              ),
+            );
+//            print('done');
+            return mapEntry;
+          },
+        ),
+      ),
+    };
+//    print('done done');
+//    print(result);
+    return result;
+  }
+}
+
+//class Events {
+//  Events();
+//
+//  var events = LinkedHashMap<DateTime, List<Event>>(
+//    equals: isSameDay,
+//    hashCode: getHashCode,
+//  );
+//
+//  toJson() {
+//    Map<String, dynamic> toJson() => {
+////      'events': events.map((v) => v.toJson()).toList(),
+////      'events': List<dynamic>.from(events.map((x) => x.toJson())),;
+//          'events': [],
+//        };
+//  }
+//
+//  static final fakeEvents = '''
+//    {
+//	"events": {
+//		"2021-07-19 20:39:24.237591": [{
+//				"title": "test",
+//				"eventType": "fun",
+//				"difficulty": "easy",
+//				"feeling": "like",
+//				"dateTime": "2021-07-19 20:39:24.237591"
+//			},
+//			{
+//				"title": "test2",
+//				"eventType": "fun",
+//				"difficulty": "easy",
+//				"feeling": "like",
+//				"dateTime": "2021-07-19 20:39:24.237591"
+//			}
+//		],
+//		"2021-07-20 00:28:02.178080": [{
+//				"title": "test",
+//				"eventType": "fun",
+//				"difficulty": "easy",
+//				"feeling": "like",
+//				"dateTime": "2021-07-20 00:28:02.178080"
+//			},
+//			{
+//				"title": "test2",
+//				"eventType": "fun",
+//				"difficulty": "easy",
+//				"feeling": "like",
+//				"dateTime": "2021-07-20 00:28:02.178080"
+//			}
+//		]
+//	}
+//}
+//  ''';
+//
+//  factory Events.fromJson(Map<String, dynamic> json) {
+//    final decoded = jsonDecode(fakeEvents);
+//    print(decoded);
+////    print(decoded['events']);
+//    return Events();
+////    final receivedDateTime = DateTime.parse(json['dateTime']);
+////    return Event(
+////      json['title'],
+////      eventType: EnumToString.fromString(EventType.values, json['eventType']),
+////      difficulty:
+////          EnumToString.fromString(Difficulty.values, json['difficulty']),
+////      feeling: EnumToString.fromString(Feeling.values, json['feeling']),
+////      time: TimeOfDay.fromDateTime(receivedDateTime),
+////      dateTime: receivedDateTime,
+////    );
+//  }
+//}
 
 /// Example event class.
 class Event {
@@ -45,6 +178,31 @@ class Event {
 
   @override
   String toString() => title;
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    final receivedDateTime = DateTime.parse(json['dateTime']);
+    return Event(
+      json['title'],
+      eventType: EnumToString.fromString(EventType.values, json['eventType']),
+      difficulty:
+          EnumToString.fromString(Difficulty.values, json['difficulty']),
+      feeling: EnumToString.fromString(Feeling.values, json['feeling']),
+      time: TimeOfDay.fromDateTime(receivedDateTime),
+      dateTime: receivedDateTime,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final result = {
+      'title': title,
+      'eventType': EnumToString.convertToString(eventType),
+      'difficulty': EnumToString.convertToString(difficulty),
+      'feeling': EnumToString.convertToString(feeling),
+      'dateTime': dateTime!.toIso8601String(),
+    };
+//    print(result);
+    return result;
+  }
 
   MusicType get musicType {
     if (eventType == EventType.fun) {
@@ -81,36 +239,8 @@ class Event {
   }
 }
 
-/// Example events.
-///
-/// Using a [LinkedHashMap] is highly recommended if you decide to use a map.
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = Map.fromIterable(List.generate(50, (index) => index),
-    key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-    value: (item) => List.generate(
-        item % 4 + 1, (index) => Event('Event $item | ${index + 1}')))
-  ..addAll({
-    kToday: [
-      Event('Today\'s Event 1'),
-      Event('Today\'s Event 2'),
-    ],
-  });
-
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
-}
-
-/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
-List<DateTime> daysInRange(DateTime first, DateTime last) {
-  final dayCount = last.difference(first).inDays + 1;
-  return List.generate(
-    dayCount,
-    (index) => DateTime.utc(first.year, first.month, first.day + index),
-  );
 }
 
 final kToday = DateTime.now();
