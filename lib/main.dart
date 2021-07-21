@@ -6,19 +6,8 @@ import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   AssetsAudioPlayer.setupNotificationsOpenAction((notification) {
-//    print(notification.audioId);
     return true;
   });
-
-//  runApp(
-//    NeumorphicTheme(
-//      theme: NeumorphicThemeData(
-//        intensity: 0.8,
-//        lightSource: LightSource.topLeft,
-//      ),
-//      child: MyApp(),
-//    ),
-//  );
 
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
@@ -32,7 +21,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-//      home: StartPage(),
       home: TableEvent(),
     );
   }
