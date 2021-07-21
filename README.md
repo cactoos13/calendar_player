@@ -4,8 +4,8 @@ A calendar that you can submit your events and get music based on your mood for 
 
 calendar
 
-<img src="/calendar.png" width="100">
+<img src="/calendar.png" width="300">
 
 add event
 
-![test image size](/dialog.png)
+<img src="/dialog.png" width="300">
