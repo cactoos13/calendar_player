@@ -3,7 +3,9 @@
 A calendar that you can submit your events and get music based on your mood for that event
 
 calendar
-![test image size](/calendar.png){:class="img-responsive"}
+
+<img src="/calendar.png" width="100">
 
 add event
-![test image size](/dialog.png){:class="img-responsive"}
+
+![test image size](/dialog.png)
