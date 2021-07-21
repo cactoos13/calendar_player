@@ -120,8 +120,8 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                       ),
                       child: ListTile(
                         onTap: () {
-                          print(event);
-                          print(event.musicType);
+//                          print(event);
+//                          print(event.musicType);
                         },
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,9 +336,9 @@ class _TableEventsExampleState extends State<TableEventsExample> {
                           });
                         }
 //                        prefs.setString("events", jsonEncode(events));
-                        print(jsonEncode(events));
+//                        print(jsonEncode(events));
                         clearDialog();
-                        print(events);
+//                        print(events);
                         _selectedEvents.value = _getEventsForDay(_selectedDay!);
                         Navigator.pop(innerContext);
                       });

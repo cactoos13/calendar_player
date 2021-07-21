@@ -125,16 +125,16 @@ class _TableEventState extends State<TableEvent> {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     _subscriptions.add(_assetsAudioPlayer.playlistAudioFinished.listen((data) {
-      print('playlistAudioFinished : $data');
+//      print('playlistAudioFinished : $data');
     }));
     _subscriptions.add(_assetsAudioPlayer.audioSessionId.listen((sessionId) {
-      print('audioSessionId : $sessionId');
+//      print('audioSessionId : $sessionId');
     }));
     isPlaying = _assetsAudioPlayer.isPlaying.listen((isPlaying) {
-      print('isPlaying : $isPlaying');
+//      print('isPlaying : $isPlaying');
     });
     playing = _assetsAudioPlayer.current.listen((playing) {
-      print('playing : $playing');
+//      print('playing : $playing');
     });
     openPlayer();
     getSharedPrefs();

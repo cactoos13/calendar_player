@@ -6,7 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   AssetsAudioPlayer.setupNotificationsOpenAction((notification) {
-    print(notification.audioId);
+//    print(notification.audioId);
     return true;
   });
 
@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Calendar',
       theme: ThemeData(
         primarySwatch: Colors.blue,
