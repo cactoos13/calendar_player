@@ -27,7 +27,7 @@ class _TableEventState extends State<TableEvent> {
   static final today =
       DateTime.parse(DateTime.now().toIso8601String().substring(0, 10) + '');
   static final todayZ = DateTime.parse(today.toIso8601String() + 'Z');
-
+  
   DateTime _focusedDay = todayZ;
   DateTime? _selectedDay = todayZ;
   DateTime? _rangeStart;
@@ -137,7 +137,23 @@ class _TableEventState extends State<TableEvent> {
 //      print('playing : $playing');
     });
     openPlayer();
-    getSharedPrefs();
+    getSharedPrefs().then((value) {
+      const oneMin = const Duration(seconds: 1);
+      Timer.periodic(oneMin, (Timer t) {
+        if (DateTime.now().second == 0) {
+          events.forEach((k, v) {
+            if (k == todayZ) {
+              for (var item in v) {
+                if (item.time!.hour == DateTime.now().hour &&
+                    item.time!.minute == DateTime.now().minute) {
+                  playByMood(item.musicType);
+                }
+              }
+            }
+          });
+        }
+      });
+    });
   }
 
   void openPlayer() async {
@@ -185,7 +201,6 @@ class _TableEventState extends State<TableEvent> {
 
   @override
   Widget build(BuildContext context) {
-    Events.fromJson(jsonDecode(fakeEvents));
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
